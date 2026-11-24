@@ -9,7 +9,7 @@ URL:
 - `?ub=BIO200` (optionally `&school=<id>`): rules leading to one UB course
 
 TAURUS is the official record. This copy shows the retrieval date on every
-page and links each view to the matching live TAURUS data. Not affiliated
+page and points to TAURUS's own search pages for confirmation. Not affiliated
 with or endorsed by the University at Buffalo.
 
 Built output only; regenerated from a private working repository.

@@ -86,7 +86,6 @@
   <div class="meta">
     <span id="status" role="status" aria-live="polite"></span>
     <button type="button" id="copy">Copy link to this view</button>
-    <a id="live" href="#" target="_blank" rel="noopener">Check this in live TAURUS data</a>
   </div>
   <div id="results"></div>
 
@@ -97,7 +96,6 @@
 
 <script>
 (function () {
-  const API = "https://course-equivalency.apps.buffalo.edu/api/";
   const $ = id => document.getElementById(id);
   let D = null;
   const today = new Date().toISOString().slice(0, 10);
@@ -127,7 +125,6 @@
     return `${r[2]}${end}` + (isCurrent(r) ? "" : " (ended)");
   }
 
-  function setLive(url, label) { const a = $("live"); a.href = url; a.textContent = label; }
 
   function renderTable(headers, rows) {
     if (!rows.length) return "";
@@ -155,7 +152,6 @@
     });
     $("results").innerHTML = renderTable(["Transfer course", "UB equivalent", "Notes", "Effective"], html);
     $("status").textContent = `${schoolName(id)}: ${rows.length} rule${rows.length === 1 ? "" : "s"}${q ? " for " + pretty(q) : ""}${ended ? " (including ended rules)" : ""}.${note}`;
-    setLive(API + "ceg_rules_by_school/" + id, "Check this campus in live TAURUS data");
     const p = new URLSearchParams({ school: id }); if (q) p.set("course", q); if (ended) p.set("ended", "1");
     updateUrl(p, push);
   }
@@ -180,7 +176,6 @@
     $("results").innerHTML = renderTable(["SUNY campus", "Transfer course", "UB equivalent", "Notes", "Effective"], html);
     $("status").textContent = `${n} rule${n === 1 ? "" : "s"} from ${only ? schoolName(only) : "SUNY campuses"} to UB ${subj} ${num}${ended ? " (including ended rules)" : ""}.` +
       (n ? "" : " None found.");
-    setLive(API + `ceg_rules_by_course/${subj}/${num}` + (only ? `?trnsfr_src_id=${only}` : ""), "Check this UB course in live TAURUS data");
     const p = new URLSearchParams({ ub: want }); if (only) p.set("school", only); if (ended) p.set("ended", "1");
     updateUrl(p, push);
   }
@@ -235,7 +230,7 @@
   fetch("data.json").then(r => r.json()).then(d => {
     D = d;
     $("notice").innerHTML = `Copy of TAURUS data retrieved <strong>${esc(d.retrieved)}</strong> for ${d.schools.length} SUNY campuses. ` +
-      `TAURUS is the official source: confirm with the &ldquo;live TAURUS data&rdquo; link on each view, or at <a href="https://course-equivalency.apps.buffalo.edu/search-by-school">TAURUS Search by School</a>.`;
+      `TAURUS is the official source: confirm any rule at <a href="https://course-equivalency.apps.buffalo.edu/search-by-school">TAURUS Search by School</a> or <a href="https://course-equivalency.apps.buffalo.edu/search-by-course">Search by Course</a>.`;
     const opts = d.schools.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join("");
     $("school").innerHTML = opts; $("ub-school").innerHTML += opts;
     fromUrl();
