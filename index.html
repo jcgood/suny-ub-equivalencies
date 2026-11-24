@@ -147,7 +147,7 @@
       const target = q && r[0].split(/\s+and\s+/i).some(c => norm(c) === q);
       const link = `?school=${id}&course=${encodeURIComponent(norm(r[0].split(/\s+and\s+/i)[0]))}`;
       return `<tr class="${target ? "target" : ""} ${isCurrent(r) ? "" : "ended"}">` +
-        `<td class="code">${esc(pretty(r[0]))}<br><a class="rowlink" href="${link}" aria-label="Link to ${esc(pretty(r[0]))} at ${esc(schoolName(id))}">link</a></td>` +
+        `<td class="code">${target ? esc(pretty(r[0])) : `<a href="${link}" title="Show only this course and get a link to it">${esc(pretty(r[0]))}</a>`}</td>` +
         `<td class="code">${esc(pretty(r[1]))}</td><td class="note">${notesCell(r)}</td><td class="code">${effective(r)}</td></tr>`;
     });
     $("results").innerHTML = renderTable(["Transfer course", "UB equivalent", "Notes", "Effective"], html);
@@ -169,7 +169,7 @@
         if (!r[1].split(/\s+and\s+/i).some(c => ubBase(c) === want)) continue;
         n++;
         const link = `?school=${s.id}&course=${encodeURIComponent(norm(r[0].split(/\s+and\s+/i)[0]))}`;
-        html.push(`<tr class="${isCurrent(r) ? "" : "ended"}"><td>${esc(s.name)}</td><td class="code">${esc(pretty(r[0]))}<br><a class="rowlink" href="${link}" aria-label="Link to ${esc(pretty(r[0]))} at ${esc(s.name)}">link</a></td>` +
+        html.push(`<tr class="${isCurrent(r) ? "" : "ended"}"><td>${esc(s.name)}</td><td class="code"><a href="${link}" title="Show this course at ${esc(s.name)}">${esc(pretty(r[0]))}</a></td>` +
           `<td class="code">${esc(pretty(r[1]))}</td><td class="note">${notesCell(r)}</td><td class="code">${effective(r)}</td></tr>`);
       }
     }
