@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUNY to UB Course Equivalencies (unofficial TAURUS copy)</title>
+<style>
+  :root { --ub-blue: #005bbb; --harriman: #002f56; --gray: #666666; --line: #d0d0d0; --tint: #eef3fa; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; font-size: 16px; color: #111; background: #fff; line-height: 1.45; }
+  header { background: var(--ub-blue); color: #fff; padding: 16px 20px; }
+  header h1 { margin: 0; font-size: 24px; font-weight: bold; }
+  header p { margin: 4px 0 0; font-size: 18px; }
+  main { max-width: 1200px; margin: 0 auto; padding: 16px 20px 40px; }
+  a { color: var(--harriman); }
+  a:focus, button:focus, select:focus, input:focus, [role=tab]:focus { outline: 3px solid #e56a54; outline-offset: 2px; }
+  .notice { border-left: 4px solid var(--ub-blue); background: var(--tint); padding: 10px 14px; margin: 0 0 16px; }
+  .tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--ub-blue); margin-bottom: 14px; }
+  [role=tab] { font: inherit; padding: 8px 16px; border: 1px solid var(--line); border-bottom: none; background: #f4f4f4; cursor: pointer; color: #111; }
+  [role=tab][aria-selected=true] { background: var(--ub-blue); color: #fff; font-weight: bold; border-color: var(--ub-blue); }
+  .controls { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: flex-end; margin-bottom: 12px; }
+  .controls label { display: flex; flex-direction: column; font-weight: bold; font-size: 14px; gap: 4px; }
+  .controls label.inline { flex-direction: row; align-items: center; font-weight: normal; font-size: 15px; }
+  select, input[type=text] { font: inherit; padding: 6px 8px; border: 1px solid var(--gray); min-width: 14em; }
+  input.short { min-width: 6em; width: 7em; }
+  button { font: inherit; padding: 6px 14px; border: 1px solid var(--harriman); background: #fff; color: var(--harriman); cursor: pointer; }
+  button.primary { background: var(--harriman); color: #fff; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; margin: 6px 0 10px; font-size: 15px; }
+  #status { font-size: 15px; color: #111; }
+  .scroll { overflow-x: auto; max-width: 100%; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  @media (max-width: 600px) { main { padding: 12px 16px 32px; } select, input[type=text] { min-width: 0; width: 100%; } .controls label { width: 100%; } }
+  th, td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+  th { background: var(--tint); }
+  tr.target td { background: #fff6d6; }
+  tr.ended td { color: var(--gray); }
+  .code { white-space: nowrap; }
+  .note { font-size: 14px; }
+  .rowlink { font-size: 13px; }
+  footer { font-size: 13px; color: var(--gray); margin-top: 24px; }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+<header>
+  <h1>SUNY to UB Course Equivalencies</h1>
+  <p>An unofficial, linkable copy of UB&rsquo;s TAURUS Course Equivalency Guide, for SUNY campuses</p>
+</header>
+<main>
+  <p class="notice" id="notice">Loading&hellip;</p>
+
+  <div class="tabs" role="tablist" aria-label="Search type">
+    <button role="tab" id="tab-school" aria-controls="panel-school" aria-selected="true">By SUNY campus</button>
+    <button role="tab" id="tab-ub" aria-controls="panel-ub" aria-selected="false" tabindex="-1">By UB course</button>
+  </div>
+
+  <section id="panel-school" role="tabpanel" aria-labelledby="tab-school">
+    <form class="controls" id="form-school">
+      <label>SUNY campus
+        <select id="school"></select>
+      </label>
+      <label>Transfer course (optional)
+        <input type="text" id="course" placeholder="e.g. BIOL115" autocomplete="off">
+      </label>
+      <label class="inline"><input type="checkbox" id="ended-school"> &nbsp;Include ended rules</label>
+      <button type="submit" class="primary">Show</button>
+    </form>
+  </section>
+
+  <section id="panel-ub" role="tabpanel" aria-labelledby="tab-ub" hidden>
+    <form class="controls" id="form-ub">
+      <label>UB subject
+        <input type="text" id="ub-subj" class="short" placeholder="e.g. BIO" autocomplete="off">
+      </label>
+      <label>UB number
+        <input type="text" id="ub-num" class="short" placeholder="e.g. 200" autocomplete="off">
+      </label>
+      <label>SUNY campus (optional)
+        <select id="ub-school"><option value="">All SUNY campuses</option></select>
+      </label>
+      <label class="inline"><input type="checkbox" id="ended-ub"> &nbsp;Include ended rules</label>
+      <button type="submit" class="primary">Show</button>
+    </form>
+  </section>
+
+  <div class="meta">
+    <span id="status" role="status" aria-live="polite"></span>
+    <button type="button" id="copy">Copy link to this view</button>
+    <a id="live" href="#" target="_blank" rel="noopener">Check this in live TAURUS data</a>
+  </div>
+  <div id="results"></div>
+
+  <footer>
+    <p>Source: UB TAURUS Course Equivalency Guide (<a href="https://www.buffalo.edu/taurus.html">buffalo.edu/taurus</a>), which &ldquo;displays course articulation approved by UB faculty.&rdquo; TAURUS is the official record; this page repackages its public data as of the date above and may be out of date. TAURUS also has rules it does not display publicly, which are not shown here either. Not affiliated with or endorsed by the University at Buffalo.</p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  const API = "https://course-equivalency.apps.buffalo.edu/api/";
+  const $ = id => document.getElementById(id);
+  let D = null;
+  const today = new Date().toISOString().slice(0, 10);
+
+  const norm = s => (s || "").toUpperCase().replace(/[^A-Z0-9#]/g, "");
+  const pretty = s => (s || "").replace(/\b([A-Z]+)(\d)/g, "$1 $2");
+  const ubBase = s => { const m = norm(s).match(/^([A-Z]+)(\d+)/); return m ? m[1] + m[2] : norm(s); };
+  const isCurrent = r => r[2] <= today && r[3] >= today;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const schoolName = id => (D.schools.find(s => s.id === id) || {}).name || id;
+
+  function wildcardMatch(pattern, code) {
+    if (!pattern.includes("#")) return false;
+    return new RegExp("^" + pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/#/g, "\\d") + "$").test(code);
+  }
+
+  function notesCell(r) {
+    const parts = [];
+    for (const [k, v] of Object.entries(r[6] || {})) parts.push(`<span class="code">${esc(pretty(k))}</span>: ${esc(v.trim())}`);
+    for (const c of r[5] || []) parts.push(esc(c));
+    if (r[4] && r[4] !== "0") parts.push(`Minimum grade points: ${esc(r[4])}`);
+    return parts.join("<br>");
+  }
+
+  function effective(r) {
+    const end = r[3] >= "9999" ? "" : ` to ${r[3]}`;
+    return `${r[2]}${end}` + (isCurrent(r) ? "" : " (ended)");
+  }
+
+  function setLive(url, label) { const a = $("live"); a.href = url; a.textContent = label; }
+
+  function renderTable(headers, rows) {
+    if (!rows.length) return "";
+    return `<div class="scroll" role="region" aria-label="Equivalency rules" tabindex="0"><table><caption class="visually-hidden">Equivalency rules</caption><thead><tr>${headers.map(h => `<th scope="col">${h}</th>`).join("")}</tr></thead><tbody>${rows.join("")}</tbody></table></div>`;
+  }
+
+  function showSchool(push) {
+    const id = $("school").value, q = norm($("course").value), ended = $("ended-school").checked;
+    const all = (D.rules[id] || []).filter(r => ended || isCurrent(r));
+    let rows = all, note = "";
+    if (q) {
+      const exact = all.filter(r => r[0].split(/\s+and\s+/i).some(c => norm(c) === q));
+      const partial = all.filter(r => !exact.includes(r) && norm(r[0]).includes(q));
+      const wild = exact.length ? [] : all.filter(r => r[0].split(/\s+and\s+/i).some(c => wildcardMatch(norm(c), q)));
+      rows = exact.concat(partial, wild);
+      if (!exact.length && wild.length) note = ` No rule names ${pretty(q)} specifically; ${wild.length === 1 ? "this subject-wide rule applies" : "these subject-wide rules apply"} (# = any digit).`;
+      if (!rows.length) note = ` No ${ended ? "" : "current "}TAURUS rule found for ${pretty(q)} at this campus.`;
+    }
+    const html = rows.map(r => {
+      const target = q && r[0].split(/\s+and\s+/i).some(c => norm(c) === q);
+      const link = `?school=${id}&course=${encodeURIComponent(norm(r[0].split(/\s+and\s+/i)[0]))}`;
+      return `<tr class="${target ? "target" : ""} ${isCurrent(r) ? "" : "ended"}">` +
+        `<td class="code">${esc(pretty(r[0]))}<br><a class="rowlink" href="${link}" aria-label="Link to ${esc(pretty(r[0]))} at ${esc(schoolName(id))}">link</a></td>` +
+        `<td class="code">${esc(pretty(r[1]))}</td><td class="note">${notesCell(r)}</td><td class="code">${effective(r)}</td></tr>`;
+    });
+    $("results").innerHTML = renderTable(["Transfer course", "UB equivalent", "Notes", "Effective"], html);
+    $("status").textContent = `${schoolName(id)}: ${rows.length} rule${rows.length === 1 ? "" : "s"}${q ? " for " + pretty(q) : ""}${ended ? " (including ended rules)" : ""}.${note}`;
+    setLive(API + "ceg_rules_by_school/" + id, "Check this campus in live TAURUS data");
+    const p = new URLSearchParams({ school: id }); if (q) p.set("course", q); if (ended) p.set("ended", "1");
+    updateUrl(p, push);
+  }
+
+  function showUb(push) {
+    const subj = norm($("ub-subj").value).replace(/\d/g, ""), num = norm($("ub-num").value).replace(/[A-Z]/g, "");
+    const only = $("ub-school").value, ended = $("ended-ub").checked;
+    if (!subj || !num) { $("status").textContent = "Enter a UB subject and number, e.g. BIO 200."; $("results").innerHTML = ""; return; }
+    const want = subj + num, html = [];
+    let n = 0;
+    for (const s of D.schools) {
+      if (only && s.id !== only) continue;
+      for (const r of D.rules[s.id] || []) {
+        if (!ended && !isCurrent(r)) continue;
+        if (!r[1].split(/\s+and\s+/i).some(c => ubBase(c) === want)) continue;
+        n++;
+        const link = `?school=${s.id}&course=${encodeURIComponent(norm(r[0].split(/\s+and\s+/i)[0]))}`;
+        html.push(`<tr class="${isCurrent(r) ? "" : "ended"}"><td>${esc(s.name)}</td><td class="code">${esc(pretty(r[0]))}<br><a class="rowlink" href="${link}" aria-label="Link to ${esc(pretty(r[0]))} at ${esc(s.name)}">link</a></td>` +
+          `<td class="code">${esc(pretty(r[1]))}</td><td class="note">${notesCell(r)}</td><td class="code">${effective(r)}</td></tr>`);
+      }
+    }
+    $("results").innerHTML = renderTable(["SUNY campus", "Transfer course", "UB equivalent", "Notes", "Effective"], html);
+    $("status").textContent = `${n} rule${n === 1 ? "" : "s"} from ${only ? schoolName(only) : "SUNY campuses"} to UB ${subj} ${num}${ended ? " (including ended rules)" : ""}.` +
+      (n ? "" : " None found.");
+    setLive(API + `ceg_rules_by_course/${subj}/${num}` + (only ? `?trnsfr_src_id=${only}` : ""), "Check this UB course in live TAURUS data");
+    const p = new URLSearchParams({ ub: want }); if (only) p.set("school", only); if (ended) p.set("ended", "1");
+    updateUrl(p, push);
+  }
+
+  function updateUrl(p, push) {
+    const url = location.pathname + "?" + p.toString();
+    if (push) history.pushState(null, "", url); else history.replaceState(null, "", url);
+  }
+
+  function selectTab(which, focus) {
+    for (const t of ["school", "ub"]) {
+      const on = t === which;
+      $("tab-" + t).setAttribute("aria-selected", on); $("tab-" + t).tabIndex = on ? 0 : -1;
+      $("panel-" + t).hidden = !on;
+    }
+    if (focus) $("tab-" + which).focus();
+  }
+
+  function fromUrl() {
+    const p = new URLSearchParams(location.search);
+    if (p.get("ub")) {
+      const m = p.get("ub").toUpperCase().match(/^([A-Z]+)\s*(\d+)/);
+      if (m) { $("ub-subj").value = m[1]; $("ub-num").value = m[2]; }
+      $("ub-school").value = p.get("school") || ""; $("ended-ub").checked = p.get("ended") === "1";
+      selectTab("ub"); showUb(false);
+    } else {
+      if (p.get("school") && D.rules[p.get("school")]) $("school").value = p.get("school");
+      $("course").value = p.get("course") ? pretty(p.get("course")) : "";
+      $("ended-school").checked = p.get("ended") === "1";
+      selectTab("school"); showSchool(false);
+      const t = document.querySelector("tr.target"); if (t) t.scrollIntoView({ block: "center" });
+    }
+  }
+
+  $("form-school").addEventListener("submit", e => { e.preventDefault(); showSchool(true); });
+  $("form-ub").addEventListener("submit", e => { e.preventDefault(); showUb(true); });
+  $("school").addEventListener("change", () => { $("course").value = ""; showSchool(true); });
+  $("tab-school").addEventListener("click", () => { selectTab("school"); showSchool(true); });
+  $("tab-ub").addEventListener("click", () => { selectTab("ub"); showUb(true); });
+  document.querySelector("[role=tablist]").addEventListener("keydown", e => {
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      const next = $("tab-school").getAttribute("aria-selected") === "true" ? "ub" : "school";
+      selectTab(next, true); next === "ub" ? showUb(true) : showSchool(true);
+    }
+  });
+  $("copy").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(location.href); $("status").textContent = "Link copied: " + location.href; }
+    catch (e) { $("status").textContent = "Copy this address from the browser bar: " + location.href; }
+  });
+  window.addEventListener("popstate", fromUrl);
+
+  fetch("data.json").then(r => r.json()).then(d => {
+    D = d;
+    $("notice").innerHTML = `Copy of TAURUS data retrieved <strong>${esc(d.retrieved)}</strong> for ${d.schools.length} SUNY campuses. ` +
+      `TAURUS is the official source: confirm with the &ldquo;live TAURUS data&rdquo; link on each view, or at <a href="https://course-equivalency.apps.buffalo.edu/search-by-school">TAURUS Search by School</a>.`;
+    const opts = d.schools.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join("");
+    $("school").innerHTML = opts; $("ub-school").innerHTML += opts;
+    fromUrl();
+  }).catch(() => { $("notice").textContent = "Could not load the data file."; });
+})();
+</script>
+</body>
+</html>
